@@ -3,66 +3,70 @@
 #include <string.h>
 #include "libft.h"
 
-char	**ft_split(const char *s, char c)
+#include <stdlib.h>
+
+static int count_words(const char *s, char c)
 {
-	char	**result;
-	int		number_words;
-	int		i;
-	int		j;
-	int		k;
-	int		m;
+    int count = 0;
+    int in_word = 0;
 
-	int		len;
-	int		*values;
+    while (*s)
+    {
+        if (*s != c && in_word == 0)
+        {
+            in_word = 1;
+            count++;
+        }
+        else if (*s == c)
+        {
+            in_word = 0;
+        }
+        s++;
+    }
+    return (count);
+}
 
-	number_words = 0;
-	i = 0;
-	j = 0;
-	k = 0;
-	m = 0;
+static char *extract_word(const char *s, int start, int end)
+{
+    char *word = malloc((end - start + 1) * sizeof(char));
+    if (!word)
+        return (NULL);
 
+    int i = 0;
+    while (start < end)
+        word[i++] = s[start++];
+    word[i] = '\0';
+    return (word);
+}
 
-	while (s[i] != '\0')
-	{
-		if(s[i] == c)
-		{
-			number_words++;
-		}
-		i++;
-	}
+char **ft_split(const char *s, char c)
+{
+    if (!s)
+        return (NULL);
 
-	values = malloc(number_words * sizeof(int));
+    int words = count_words(s, c);
+    char **result = malloc((words + 1) * sizeof(char *));
+    if (!result)
+        return (NULL);
 
-	while (s[j] != '\0' && k < number_words) // count number of words
-	{
-		
-		while[s[j] == c]
-			j++;
-		
-		len = 0;
-		while (s[j] && s[j] != c)
-		{
-			len++;
-			i++;
-		}
+    int i = 0;
+    int j = 0;
+    int start = -1;
 
-		values[k] = len;
-		k++;
-	}
+    while (i <= (int)ft_strlen(s))
+    {
+        if (s[i] != c && s[i] != '\0' && start < 0)
+        {
+            start = i;
+        }
+        else if ((s[i] == c || s[i] == '\0') && start >= 0)
+        {
+            result[j++] = extract_word(s, start, i);
+            start = -1;
+        }
+        i++;
+    }
+    result[j] = NULL; //
 
-	while (m < number_words)
-	{
-		result[m] = malloc(values[m] * sizeof(char *)); //allocate memory of array of poiters
-		m++;
-	}
-
-
-
-
-
-
-
-
-
-
+    return (result);
 }
