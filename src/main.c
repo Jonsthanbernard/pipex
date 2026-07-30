@@ -2,14 +2,18 @@
 
 int main (int argc, char **argv, char **envp)
 {
-	if (argc > 5)
+	if (argc > 5 || argc < 5)
 		return (1);
 
 	pid_t	pid1;
 	pid_t	pid2;
 	int		pipe_fd[2];
 
-	pipe(pipe_fd);
+	if (pipe(pipe_fd) == -1)
+	{
+		perror("pipe creation failed");
+		exit(1);
+	}
 
 	// 2. First Fork -> Child 1
 	pid1 = fork();

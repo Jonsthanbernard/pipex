@@ -15,7 +15,7 @@
 void free_array(char **arr);
 char	*get_env_path(char **env);
 char	*build_cmd_path(char *path, char *command);
-char	*find_cmd_path(const char *cmd, char **envp);
+char	*find_cmd_path(char *cmd, char **envp);
 void	execute_cmd(char *cmd_str, char **envp);
 void	child_one(char **argv, char **envp, int *pipe_fd);
 void	child_two(char **argv, char **envp, int *pipe_fd);

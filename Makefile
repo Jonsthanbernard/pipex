@@ -1,27 +1,56 @@
+# Name of the executable
 NAME        = pipex
+
+# Compiler and Flags
 CC          = cc
-CFLAGS      = -Wall -Wextra -Werror
+CFLAGS      = -Wall -Wextra -Werror -Iinclude -Ilibrary/include
 
-# 1. Automatically find ALL .c files in the project directory
-SRCS        = $(wildcard *.c)
+# Directories
+SRC_DIR     = src
+OBJ_DIR     = obj
+LIBFT_DIR   = library
 
-# 2. Convert all found .c names to .o names
-OBJS        = $(SRCS:.c=.o)
+# Source Files and Object Files
+SRCS        = $(SRC_DIR)/main.c \
+              $(SRC_DIR)/child.c \
+              $(SRC_DIR)/path.c \
+              $(SRC_DIR)/utils.c
 
+OBJS        = $(SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
+
+# Library Dependencies
+LIBFT       = $(LIBFT_DIR)/libft.a
+
+# Rules
 all: $(NAME)
 
-$(NAME): $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
+# Build the final executable
+$(NAME): $(LIBFT) $(OBJS)
+	$(CC) $(CFLAGS) $(OBJS) $(LIBFT) -o $(NAME)
 
-%.o: %.c
+# Build Libft if not already built
+$(LIBFT):
+	@make -C $(LIBFT_DIR)
+
+# Compile source files into object files inside obj/ directory
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-clean:
-	rm -f $(OBJS)
+# Create object directory if it doesn't exist
+$(OBJ_DIR):
+	mkdir -p $(OBJ_DIR)
 
+# Clean object files
+clean:
+	rm -rf $(OBJ_DIR)
+	@make -C $(LIBFT_DIR) clean
+
+# Clean object files and executable
 fclean: clean
 	rm -f $(NAME)
+	@make -C $(LIBFT_DIR) fclean
 
+# Re-build everything
 re: fclean all
 
 .PHONY: all clean fclean re

@@ -39,6 +39,6 @@ void	free_split_array(char **array)
 void	error_exit(char *message, int fd)
 {
 	perror(message);
-	free(fd);
+	close(fd);
 	exit(0);
 }
